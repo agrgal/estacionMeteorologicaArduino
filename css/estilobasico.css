@@ -89,10 +89,51 @@ contents styles
 	border: 0px solid #676767;
 	overflow: hidden;
 	/* background: blue; */
+	position: relative;
 }
 
 #contents p { line-height: 165%; }
 
+/* Navegación */
+
+#navcontainer {
+   border: 0px solid red;
+   overflow: hidden;
+   width: 100%;
+   height: 40px;
+   padding: 0px;
+   margin: 0px auto;
+}
+
+#navcontainer ul
+{
+padding-left: 0;
+margin-left: 0;
+margin: 0;
+background-color: #036;
+color: White;
+float: left;
+width: 100%;
+font-family: arial, helvetica, sans-serif;
+}
+
+#navcontainer ul li { display: inline; }
+
+#navcontainer ul li a
+{
+padding: 0.2em 1em;
+background-color: #036;
+color: White;
+text-decoration: none;
+float: left;
+border-right: 1px solid #fff;
+}
+
+#navcontainer ul li a:hover
+{
+background-color: #369;
+color: #fff;
+}
 /* ------------------------------
 header styles
 ------------------------------ */
@@ -199,6 +240,13 @@ divs
 
 #desde, #hasta {
 text-align: center;
+}
+
+#iconos {
+	position: absolute;
+	top: 0px;
+	right: 2px;
+	border: 0px solid red;
 }
 
 

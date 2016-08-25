@@ -49,16 +49,19 @@ if ($_POST["limite"]>0) { // Si hay un número mayor que cero
 		$link=Conectarse(); // y me conecto. //dependiendo del tipo recupero uno u otro.
 	    $result=mysqli_query($link,$Sql); // ejecuta la cadena sql y almacena el resultado el $result
 	    $datos=array();
+	    $minimo=0;
         $ii=0;
-	    while ($row=mysqli_fetch_array($result)) {
+	    while ($row=mysqli_fetch_array($result)) {			
                 $datos[$ii]["temperatura"]=$row["Temperatura"];
                 $datos[$ii]["presion"]=$row["Presion"];
                 $datos[$ii]["humedad"]=$row["Humedad"];
                 $datos[$ii]["fecha"]=substr($row["FechaHora"],0,10);
                 $datos[$ii]["hora"]=substr($row["FechaHora"],11,8);
                 $datos[$ii]["tiempoarduino"]=$row["tiempoArduino"];
+                if ($ii==0) { $minimo=$row["tiempoArduino"]; } // mínimo valor registrado por Arduino de su cuenta de tiempo
 				$ii++;
 		        } // fin del while	
+		$datos[0]["minimo"]=$minimo;
 		$datos_json=json_encode($datos); // codifica como json...
 		mysqli_free_result($result); 
 	    mysqli_close($link); 

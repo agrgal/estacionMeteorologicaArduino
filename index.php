@@ -44,9 +44,11 @@ session_start();
 
 <div id="container"> <!-- CONTENEDOR PRINCIPAL -->  
     
+    
     <!-- HTML suelto: cabecera *******************************  -->
     <?php include_once("./htmlsuelto/cabecera.php"); ?> 
     <!-- ********************************************************** -->
+    <?php include_once("./htmlsuelto/barrasuperior.php"); ?>
     
     <!-- ******************************************* -->
     <!-- ******** ZONA DE CÁLCULOS PREVIOS ********* -->

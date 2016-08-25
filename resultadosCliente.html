@@ -1,27 +1,8 @@
-<?php header('Content-type: text/html; charset=UTF-8'); ?>
-<?php
-// Codigo que se ejecuta al principio de la página
-// importante incluir al principio de cada una, lo de las funciones
-include_once("./funciones/funciones.php"); // funciones varias de conexión a base de datos, etc.
-
-// Incluyo además las clases que se van a usar
-include_once("./clases/class.micalendario.php"); //clase mi calendario que presenta fechas formateadas
-
-// incluyo las variables de esas clases
-$calendario = New micalendario(); // variable de calendario. Lo necesito para la cabecera
-
-// Variables de sesión
-session_start();
-
-// Las variables de sesión se establecen en los scripts AJAX en 
-
-?>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="es">	
 <head profile="http://www.w3.org/2005/10/profile">
   <!-- *** Principio del HEAD *************************************-->	
-  <meta content="text/html; charset=iso-8859-15" http-equiv="content-type">
+  <meta content="text/html; charset=UTF-8" http-equiv="content-type">
   <title>Resultados almacenados en la base de datos</title>
   <link rel="icon" 
         type="image/png" 
@@ -32,7 +13,7 @@ session_start();
   <!-- ***************************** -->
   <!-- Linkar a hojas de estilo CSS -->
   <!-- ***************************** -->
-  <?php include_once("./css/cargarestiloscss.php"); ?>
+  <link rel="stylesheet" href="./css/estilobasico.css"> <!-- Estilo básico de la página -->
  
   <!-- *** Final del HEAD, antes los ficheros de enlace a CSS ******-->
 </head>
@@ -45,16 +26,40 @@ session_start();
 <div id="container"> <!-- CONTENEDOR PRINCIPAL -->  
     
     <!-- HTML suelto: cabecera *******************************  -->
-    <?php include_once("./htmlsuelto/cabecera.php"); ?> 
+    	<div id="header" title="sitename">
+		<div id="logo">
+			<img src="./imagenes/logoA.png" title="logo 'programa de Aurelio', realizado por Miguel Parra" alt="logo 'programa de Aurelio', realizado por Miguel Parra" width="80%" height="auto">
+		</div>
+		<div id="iesseritium">
+			<a href="./index.php">
+			<img src="./imagenes/weather.png" title="by Freepik in weather" alt="by Freepik in weather" width="100%" height="auto">
+			</a>
+		</div>
+		<div id="calendario" style="margin-top: -20px;">
+			<p id="fechaCalendario"></p>
+		</div>
+	</div>
+	<div id="navcontainer">
+		<ul id="navlist">
+				<li><a href="./index.php">
+				<img src="" style="width:22px; height: auto; margin-right: 5px;">
+				Lectura de datos de la tarjeta</a></li>
+				<li><a href="./resultados.php">
+				<img src="" style="width:22px; height: auto; margin-right: 5px;">
+				Obtener registros</a></li>	
+				<li><a href="./indexCliente.html">
+				<img src="" style="width:22px; height: auto; margin-right: 5px;">
+				Lectura de datos de la tarjeta (version Cliente)</a></li>
+				<li><a href="./resultadosCliente.html">
+				<img src="" style="width:22px; height: auto; margin-right: 5px;">
+				Obtener registros (version Cliente)</a></li>		
+		</ul>	
+	</div>
     <!-- ********************************************************** -->
-    <?php include_once("./htmlsuelto/barrasuperior.php"); ?>
     
     <!-- ******************************************* -->
     <!-- ******** ZONA DE CÁLCULOS PREVIOS ********* -->
     <!-- ******************************************* -->
-    <?php // Zona en la que se extraen variables de las distintas clases
-
-    ?>    
     <!-- *********************************************************** -->
      
 	<div id="test"> <!-- TESTER -->
@@ -117,9 +122,7 @@ session_start();
 	<!-- FIN DEL CONTENIDO PRINCIPAL -->
 	<!-- ********************************************************** -->
     
-    <!-- HTML suelto: pie de página *******************************  -->
-    <?php include_once("./htmlsuelto/pie.php"); ?> 
-    <!-- ********************************************************** -->
+
     
     <div id="notificacionNoHayDatos" title="No hay datos que mostrar">
 		<p style="text-align: justify;">Lo sentimos. No hay datos que mostrar con este filtro. Prueba a anular las fechas y vuelve a obtener registros.</p>
@@ -129,6 +132,19 @@ session_start();
 		<p style="text-align: justify;">Pulsa "CONTINUAR" si estas seguro de borrar la base de datos...</p>
     </div>
     
+        <!-- HTML suelto: pie de página *******************************  -->
+    <div id="footer">
+		
+	   <div id="footer_img">
+	   <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Licencia de Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+	   </div>
+	   
+	   <div id="footer_text">
+		   <span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Lector de datos de Estación Meteorológica Arduino</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="https://plus.google.com/u/0/107956014678839644235/posts" property="cc:attributionName" rel="cc:attributionURL">Aurelio Gallardo Rodríguez</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional License</a>.
+	   </div>
+	   
+	</div>
+    <!-- ********************************************************** -->
     
 </div> <!-- FIN del CONTENEDOR PRINCIPAL -->
 
@@ -165,6 +181,9 @@ session_start();
 		ahoramenosuno.setMinutes(ahoramenosuno.getMinutes()-60);
 		
 		var numFilas = 0; // Número de filas en la tabla
+		
+		// Fecha en el calendario
+		$("#fechaCalendario").html("Son las "+obtenerhora()+", </br> del día "+obtenerfecha());
 							
 		// definición de calendarios
 		$("#fechaDesde, #fechaHasta").datepicker({
