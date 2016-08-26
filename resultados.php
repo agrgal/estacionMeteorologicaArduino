@@ -70,8 +70,11 @@ session_start();
 		
 		<div id="titular"><h1>Resultados almacenados en la base de datos</h1></div> 
 		<div id="iconos">
-			<img id="borrarBD" src="./imagenes/delete.png" width="75px" height="auto" title="Borra la base de datos" alt="Borra la base de datos">
-			<a id="csv"><img id="csvImagen" src="./imagenes/csv.png" width="75px" height="auto" title="Genera fichero CSV" alt="Genera fichero CSV"></a>
+			<img id="borrarBD" src="./imagenes/delete.png" width="75px" height="auto" title="Borra la base de datos" alt="Borra la base de datos. Icono por Freepik">
+			<a id="csv"><img id="csvImagen" src="./imagenes/csv.png" width="75px" height="auto" title="Genera fichero CSV" alt="Genera fichero CSV. Icono por Freepik"></a>
+			<img id="graficaT" src="./imagenes/termometro.png" width="75px" height="auto" title="Gráfica de Temperatura" alt="Gráfica Google. Icono por Freepik">
+			<img id="graficaP" src="./imagenes/presion.png" width="75px" height="auto" title="Gráfica de Presión" alt="Gráfica Google. Icono por Freepik">
+			<img id="graficaH" src="./imagenes/humedad.png" width="75px" height="auto" title="Gráfica de Humedad" alt="Gráfica Google. Icono por Freepik">
 		</div>
 		<div id="desde">
 			<label for="fechaDesde"><span>Fecha desde</span><input type="text" id="fechaDesde" size="10" maxlength="10"/></label>
@@ -129,6 +132,10 @@ session_start();
 		<p style="text-align: justify;">Pulsa "CONTINUAR" si estas seguro de borrar la base de datos...</p>
     </div>
     
+    <div id="notificacionGrafica" title="Gráficas de temperatura, presión y humedad generadas por Google Charts">
+		<div id="graficaShow" style="width: 100%; height: 600px;"></div>
+    </div>
+    
     
 </div> <!-- FIN del CONTENEDOR PRINCIPAL -->
 
@@ -148,11 +155,21 @@ session_start();
   <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
   <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
   
+  <!-- google charts -->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   
   <script>     
      
      $(document).ready(function() {  		
-		 
+		
+		var cual="temperatura"; // tipo de gráfica. Modificador.
+		
+		// llamadas a las APIS de google charts
+		google.charts.load('current', {'packages':['corechart']});
+		// google.charts.load("current", {packages: ["line"]}); // Material Line Charts
+        google.charts.setOnLoadCallback(cargargrafico);
+
+ 
 		var cabeceraTabla = '<tr><th class="tg-elaw">Arduino tiempo (ms)<br></th><th class="tg-j0ip">Fecha</th>' +
 							'<th class="tg-j0ip">Hora</th><th class="tg-elaw">Temperatura (ºC)</th>'+
 							'<th class="tg-elaw">Presión (mb)</th>' +
@@ -204,11 +221,15 @@ session_start();
 		});
 		
 		// Definición de diálogo
-			$( "#notificacionNoHayDatos, #notificacionBorrar" ).dialog({
-			autoOpen: false, width: '50%', height: '300',
-			resizable: false, modal: true,
-			show: {	effect: "blind", duration: 1000	},
-			hide: {	effect: "drop", duration: 1000 },
+			$( "#notificacionNoHayDatos, #notificacionBorrar, #notificacionGrafica" ).dialog({
+				autoOpen: false, width: '50%', height: '350',
+				resizable: false, modal: true,
+				show: {	effect: "blind", duration: 1000	},
+				hide: {	effect: "drop", duration: 1000 },
+			});
+			
+			$("#notificacionGrafica").dialog({
+				width: '80%', height: '1000',
 			});
 			
 			$("#notificacionBorrar").dialog({
@@ -257,12 +278,12 @@ session_start();
 					$.each( recupera, function( key, value ) {
 						   // alert( key + ": " + value.temperatura );
 						   annadefila = "";
-						   annadefila +="<td>"+(recupera[numFilas].tiempoarduino-recupera[0].minimo)+"</td>"; // normalizado al valor más bajo
-						   annadefila +="<td>"+recupera[numFilas].fecha+"</td>";
-						   annadefila +="<td>"+recupera[numFilas].hora+"</td>";
-						   annadefila +="<td>"+recupera[numFilas].temperatura+"</td>";
-					       annadefila +="<td>"+recupera[numFilas].presion+"</td>";
-						   annadefila +="<td>"+recupera[numFilas].humedad+"</td>";
+						   annadefila +="<td class='tiempoArduino'>"+(recupera[numFilas].tiempoarduino-recupera[0].minimo)+"</td>"; // normalizado al valor más bajo
+						   annadefila +="<td class='fecha'>"+recupera[numFilas].fecha+"</td>";
+						   annadefila +="<td class='hora'>"+recupera[numFilas].hora+"</td>";
+						   annadefila +="<td class='temperatura'>"+recupera[numFilas].temperatura+"</td>";
+					       annadefila +="<td class='presion'>"+recupera[numFilas].presion+"</td>";
+						   annadefila +="<td class='humedad'>"+recupera[numFilas].humedad+"</td>";
 						   // alert(annadefila);
 						   annadefila = '<tr class="tg-cmqq">'+annadefila+'</tr>';
 						   if (numFilas%5==0 && numFilas>3) { $("#tablaDatos tr:last").after(cabeceraTabla); } // añade cabecera cada 5 filas, para verlo mejor.
@@ -301,6 +322,93 @@ session_start();
 			// IF CSV, don't do event.preventDefault() or return false
 			// We actually need this to be a typical hyperlink
 		});
+		
+		// Al hacer click en el icono de la Grafica
+		$("#graficaT, #graficaP, #graficaH").click(function(){	
+			// alert($(this).attr("id"));		
+			if ($(this).attr("id")=="graficaT") {cual="temperatura";} //Elige el modificador según el botón pulsado
+			if ($(this).attr("id")=="graficaP") {cual="presion";}
+			if ($(this).attr("id")=="graficaH") {cual="humedad";}
+			cargargrafico();
+			$("#notificacionGrafica").dialog("open");
+		});
+
+		// *********************************************************
+		// Función callback que llama a una gráfica. Paso intermedio
+		// *********************************************************		
+		function cargargrafico() {
+			drawChart(cual);
+		}
+		
+		// ******************************
+		// Función que dibuja una gráfica 
+		// ******************************
+		function drawChart(modificador) {
+
+			/* 
+			var datos =[];
+			datos[0]=['Year', 'Sales', 'Expenses'];
+			datos[1]= ['2004',  1230,      400];
+			datos[4]= ['2007',  1000,      400]; */
+			
+			// El valor de los modificadores DEBE SER el nombre de la clase en la tabla que identifica el tipo de datos.
+			
+			var columnaDatos= $('#tablaDatos td[class="'+modificador+'"]').map(function(){	
+				return $(this).text();
+			}).get();
+			
+			var ejeXHora= $('#tablaDatos td[class="hora"]').map(function(){	
+				return $(this).text();
+			}).get();
+			
+			var ejeXFecha= $('#tablaDatos td[class="fecha"]').map(function(){	
+				return $(this).text();
+			}).get();
+			
+			var datos =[];
+			datos[0]=['Fecha-Hora',modificador];
+			$.each(ejeXFecha, function( index, value ) {
+			  // alert(index+" , "+value);
+			  datos[index+1]=[value+" "+ejeXHora[index],parseFloat(columnaDatos[index])];
+			});
+			
+			// alert(datos);
+			
+			if (modificador=="temperatura") {
+			   var titulo = "Temperatura en ºC";
+			   var colorDado="red";
+			} else if (modificador=="presion") {
+			   var titulo = "Presión en mb";
+			   var colorDado="blue";
+			} else if (modificador=="humedad") {
+			   var titulo = "Humedad en %";
+			   var colorDado="green";
+			}
+
+			var data = google.visualization.arrayToDataTable(datos);
+
+			var options = {
+			  title: titulo,
+			  curveType: 'function',
+			  legend: { position: 'right' },
+			  colors: [colorDado],
+			  // chartArea: {backgroundColor: '#ff4455'},
+			  width: '1800',  height: '800', fontSize: '24', lineWidth: '2',
+			  hAxis: { slantedText: true, slantedTextAngle: '30', showTextEvery: '5',  },
+			};
+
+			// var chart = new google.charts.Line(document.getElementById('graficaShow')); // Material Line Charts
+			var chart = new google.visualization.LineChart(document.getElementById('graficaShow'));
+			
+			// Wait for the chart to finish drawing before calling the getImageURI() method.
+				google.visualization.events.addListener(chart, 'ready', function () {
+				graficaShow.innerHTML = '<img src="' + chart.getImageURI() + '">';
+				console.log(graficaShow.innerHTML);
+			});
+
+
+			chart.draw(data, options);
+        } // Fin de la función que dibuja una gráfica
 
 			
 	 }); // fin del document ready
@@ -466,6 +574,8 @@ session_start();
                 }
             }
 		
+
+
 	  
  <!-- * =======================================================================================================   * --> 	
 
