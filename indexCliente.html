@@ -40,20 +40,20 @@
 		</div>
 	</div>
 	<div id="navcontainer">
-		<ul id="navlist">
-				<li><a href="./index.php">
-				<img src="" style="width:22px; height: auto; margin-right: 5px;">
-				Lectura de datos de la tarjeta</a></li>
-				<li><a href="./resultados.php">
-				<img src="" style="width:22px; height: auto; margin-right: 5px;">
-				Obtener registros</a></li>	
-				<li><a href="./indexCliente.html">
-				<img src="" style="width:22px; height: auto; margin-right: 5px;">
-				Lectura de datos de la tarjeta (version Cliente)</a></li>
-				<li><a href="./resultadosCliente.html">
-				<img src="" style="width:22px; height: auto; margin-right: 5px;">
-				Obtener registros (version Cliente)</a></li>		
-		</ul>	
+			<ul id="navlist">
+					<li><a href="./index.php">
+					<img src="./imagenes/arduino.png" style="width:22px; height: auto; margin-right: 5px;">
+					Lectura de datos de la tarjeta</a></li>
+					<li><a href="./resultados.php">
+					<img src="./imagenes/bd.png" style="width:22px; height: auto; margin-right: 5px;">
+					Obtener registros</a></li>	
+					<li><a href="./indexCliente.html">
+					<img src="./imagenes/arduino.png" style="width:22px; height: auto; margin-right: 5px;">
+					Lectura de datos de la tarjeta (version Cliente)</a></li>
+					<li><a href="./resultadosCliente.html">
+					<img src="./imagenes/bd.png" style="width:22px; height: auto; margin-right: 5px;">
+					Obtener registros (version Cliente)</a></li>		
+			</ul>	
 	</div>
     <!-- ********************************************************** -->
     
@@ -156,6 +156,7 @@
   
   <script>     
      
+    
      $(document).ready(function() {  		
 		 
 		var timeOut; //This variable is responsible for the frequency of data acquisition 
@@ -169,11 +170,10 @@
 		var numFilas = 0;
 		
 		var intervalo = 3000;
+		
+		$("#fechaCalendario").html('<p>Son las '+obtenerhora()+',</br>del día '+obtenerfecha()+'</p>');
 
 		$("#informacion").hide();
-		
-		// Fecha en el calendario
-		$("#fechaCalendario").html("Son las "+obtenerhora()+", </br> del día "+obtenerfecha());
 
 		// Al hacer click en el botón de empezar
 		$("#empezar").click(function(){
@@ -196,9 +196,9 @@
 						   annadefila +="<td>"+recupera[0].tiempo+"</td>";
 						   annadefila +="<td>"+obtenerfecha()+"</td>";
 						   annadefila +="<td>"+obtenerhora()+"</td>";
-						   annadefila +="<td>"+recupera[0].temperatura+"</td>";
-						   annadefila +="<td>-</td>";
-						   annadefila +="<td>-</td>";
+						   annadefila +="<td>"+(recupera[0].temperatura == undefined ? "-" : recupera[0].temperatura) +"</td>";
+						   annadefila +="<td>"+(recupera[0].presion == undefined ? "-" : recupera[0].presion) +"</td>";
+						   annadefila +="<td>"+(recupera[0].humedad == undefined ? "-" : recupera[0].humedad) +"</td>";
 						   // alert(annadefila);
 						   annadefila = '<tr class="tg-cmqq">'+annadefila+'</tr>';
 						   if ($("#datCont").is(':checked')) { // Si datos de forma continua
@@ -209,14 +209,14 @@
 							   $("#tablaDatos tr:not(:first)").remove(); 
 							   $("#tablaDatos tr:last").after(annadefila);
 						   }						   
-						   $("#informacion").html("Dato obtenido: "+recupera[0].tiempo+" - "+recupera[0].temperatura); 
+						   $("#informacion").html("Dato obtenido: t(ms):"+recupera[0].tiempo+" - T (ºC):"+recupera[0].temperatura+" - P(mb):"+recupera[0].presion+" - H(%):"+recupera[0].humedad); 
 						   $("#informacion").show();
 						   numFilas += 1;
 						   
 						   // Llamada a grabar datos
 						   if ($("#grabar").is(':checked')) {
 							   // alert("grabar");
-							   $.when(guardarDatos(recupera[0].tiempo,recupera[0].temperatura,0,0)).done(function(data2){
+							   $.when(guardarDatos(recupera[0].tiempo,recupera[0].temperatura,recupera[0].presion,recupera[0].humedad)).done(function(data2){
 									// alert(data2);
 						       }); 
 						   }
@@ -295,7 +295,12 @@
 		     console.log("tiempoArduino: "+tiempoArduino);
 		     console.log("temperatura: "+temperatura);
 		     console.log("presion: "+presion);
-		     console.log("humedad: "+humedad);		     
+		     console.log("humedad: "+humedad);	
+		     // Si el dato no existe, hay que convertirlo a número (0)
+			 temperatura = (temperatura == undefined ? "0" : temperatura);
+			 presion = (presion == undefined ? "0" : presion);
+			 humedad = (humedad == undefined ? "0" : humedad);
+			 // Llamada a la grabación
 			 return $.ajax({
 			      type: 'POST',
 			      dataType: 'text',
@@ -349,7 +354,6 @@
 		
 	  
  <!-- * =======================================================================================================   * --> 	
-
   </script>
   
 <!-- **************************************************************************************** -->

@@ -179,9 +179,9 @@ session_start();
 						   annadefila +="<td>"+recupera[0].tiempo+"</td>";
 						   annadefila +="<td>"+obtenerfecha()+"</td>";
 						   annadefila +="<td>"+obtenerhora()+"</td>";
-						   annadefila +="<td>"+recupera[0].temperatura+"</td>";
-						   annadefila +="<td>-</td>";
-						   annadefila +="<td>-</td>";
+						   annadefila +="<td>"+(recupera[0].temperatura == undefined ? "-" : recupera[0].temperatura) +"</td>";
+						   annadefila +="<td>"+(recupera[0].presion == undefined ? "-" : recupera[0].presion) +"</td>";
+						   annadefila +="<td>"+(recupera[0].humedad == undefined ? "-" : recupera[0].humedad) +"</td>";
 						   // alert(annadefila);
 						   annadefila = '<tr class="tg-cmqq">'+annadefila+'</tr>';
 						   if ($("#datCont").is(':checked')) { // Si datos de forma continua
@@ -192,14 +192,14 @@ session_start();
 							   $("#tablaDatos tr:not(:first)").remove(); 
 							   $("#tablaDatos tr:last").after(annadefila);
 						   }						   
-						   $("#informacion").html("Dato obtenido: "+recupera[0].tiempo+" - "+recupera[0].temperatura); 
+						   $("#informacion").html("Dato obtenido: t(ms):"+recupera[0].tiempo+" - T (ºC):"+recupera[0].temperatura+" - P(mb):"+recupera[0].presion+" - H(%):"+recupera[0].humedad); 
 						   $("#informacion").show();
 						   numFilas += 1;
 						   
 						   // Llamada a grabar datos
 						   if ($("#grabar").is(':checked')) {
 							   // alert("grabar");
-							   $.when(guardarDatos(recupera[0].tiempo,recupera[0].temperatura,0,0)).done(function(data2){
+							   $.when(guardarDatos(recupera[0].tiempo,recupera[0].temperatura,recupera[0].presion,recupera[0].humedad)).done(function(data2){
 									// alert(data2);
 						       }); 
 						   }
@@ -278,7 +278,12 @@ session_start();
 		     console.log("tiempoArduino: "+tiempoArduino);
 		     console.log("temperatura: "+temperatura);
 		     console.log("presion: "+presion);
-		     console.log("humedad: "+humedad);		     
+		     console.log("humedad: "+humedad);	
+		     // Si el dato no existe, hay que convertirlo a número (0)
+			 temperatura = (temperatura == undefined ? "0" : temperatura);
+			 presion = (presion == undefined ? "0" : presion);
+			 humedad = (humedad == undefined ? "0" : humedad);
+			 // Llamada a la grabación
 			 return $.ajax({
 			      type: 'POST',
 			      dataType: 'text',

@@ -245,8 +245,11 @@ text-align: center;
 #iconos {
 	position: absolute;
 	top: 0px;
-	right: 2px;
+	right: 0px;
 	border: 0px solid red;
+	width: auto;
+	overflow: hidden;
+	
 }
 
 

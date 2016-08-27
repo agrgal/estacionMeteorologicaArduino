@@ -70,11 +70,11 @@ session_start();
 		
 		<div id="titular"><h1>Resultados almacenados en la base de datos</h1></div> 
 		<div id="iconos">
-			<img id="borrarBD" src="./imagenes/delete.png" width="75px" height="auto" title="Borra la base de datos" alt="Borra la base de datos. Icono por Freepik">
-			<a id="csv"><img id="csvImagen" src="./imagenes/csv.png" width="75px" height="auto" title="Genera fichero CSV" alt="Genera fichero CSV. Icono por Freepik"></a>
-			<img id="graficaT" src="./imagenes/termometro.png" width="75px" height="auto" title="Gráfica de Temperatura" alt="Gráfica Google. Icono por Freepik">
-			<img id="graficaP" src="./imagenes/presion.png" width="75px" height="auto" title="Gráfica de Presión" alt="Gráfica Google. Icono por Freepik">
-			<img id="graficaH" src="./imagenes/humedad.png" width="75px" height="auto" title="Gráfica de Humedad" alt="Gráfica Google. Icono por Freepik">
+			<img id="borrarBD" src="./imagenes/delete.png" width="50px" height="auto" title="Borra la base de datos" alt="Borra la base de datos. Icono por Freepik">
+			<a id="csv"><img id="csvImagen" src="./imagenes/csv.png" width="50px" height="auto" title="Genera fichero CSV" alt="Genera fichero CSV. Icono por Freepik"></a>
+			<img id="graficaT" src="./imagenes/termometro.png" width="50px" height="auto" title="Gráfica de Temperatura" alt="Gráfica Google. Icono por Freepik">
+			<img id="graficaP" src="./imagenes/presion.png" width="50px" height="auto" title="Gráfica de Presión" alt="Gráfica Google. Icono por Freepik">
+			<img id="graficaH" src="./imagenes/humedad.png" width="50px" height="auto" title="Gráfica de Humedad" alt="Gráfica Google. Icono por Freepik">
 		</div>
 		<div id="desde">
 			<label for="fechaDesde"><span>Fecha desde</span><input type="text" id="fechaDesde" size="10" maxlength="10"/></label>
@@ -125,7 +125,8 @@ session_start();
     <!-- ********************************************************** -->
     
     <div id="notificacionNoHayDatos" title="No hay datos que mostrar">
-		<p style="text-align: justify;">Lo sentimos. No hay datos que mostrar con este filtro. Prueba a anular las fechas y vuelve a obtener registros.</p>
+		<p style="text-align: justify;">Lo sentimos. No hay datos que mostrar con este filtro. </p>
+		<p style="text-align: justify;">Prueba a cambiar las fechas (aumenta el intervalo) y vuelve a obtener registros.</p>
     </div>
     
     <div id="notificacionBorrar" title="¿Estás seguro/a que quieres borrar la BD?">
@@ -277,18 +278,20 @@ session_start();
 					$("#tablaDatos tr:not(:first)").remove(); // Borro las filas que no necesito...
 					$.each( recupera, function( key, value ) {
 						   // alert( key + ": " + value.temperatura );
-						   annadefila = "";
-						   annadefila +="<td class='tiempoArduino'>"+(recupera[numFilas].tiempoarduino-recupera[0].minimo)+"</td>"; // normalizado al valor más bajo
-						   annadefila +="<td class='fecha'>"+recupera[numFilas].fecha+"</td>";
-						   annadefila +="<td class='hora'>"+recupera[numFilas].hora+"</td>";
-						   annadefila +="<td class='temperatura'>"+recupera[numFilas].temperatura+"</td>";
-					       annadefila +="<td class='presion'>"+recupera[numFilas].presion+"</td>";
-						   annadefila +="<td class='humedad'>"+recupera[numFilas].humedad+"</td>";
-						   // alert(annadefila);
-						   annadefila = '<tr class="tg-cmqq">'+annadefila+'</tr>';
-						   if (numFilas%5==0 && numFilas>3) { $("#tablaDatos tr:last").after(cabeceraTabla); } // añade cabecera cada 5 filas, para verlo mejor.
-						   $("#tablaDatos tr:last").after(annadefila);
-						   numFilas += 1;
+						   if (recupera[numFilas].temperatura != undefined) {
+							   annadefila = "";
+							   annadefila +="<td class='tiempoArduino'>"+(recupera[numFilas].tiempoarduino-recupera[0].minimo)+"</td>"; // normalizado al valor más bajo
+							   annadefila +="<td class='fecha'>"+recupera[numFilas].fecha+"</td>";
+							   annadefila +="<td class='hora'>"+recupera[numFilas].hora+"</td>";
+							   annadefila +="<td class='temperatura'>"+recupera[numFilas].temperatura+"</td>";
+							   annadefila +="<td class='presion'>"+recupera[numFilas].presion+"</td>";
+							   annadefila +="<td class='humedad'>"+recupera[numFilas].humedad+"</td>";
+							   // alert(annadefila);
+							   annadefila = '<tr class="tg-cmqq">'+annadefila+'</tr>';
+							   if (numFilas%5==0 && numFilas>3) { $("#tablaDatos tr:last").after(cabeceraTabla); } // añade cabecera cada 5 filas, para verlo mejor.
+							   $("#tablaDatos tr:last").after(annadefila);
+							   numFilas += 1;
+						   }
 					});
 					
 					if (numFilas==0) {
