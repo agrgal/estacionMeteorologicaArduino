@@ -5,6 +5,6 @@ $puertatrasera="----";
 // variables de conexion mysql
 $mysql_server="";
 $mysql_login="root";
-$mysql_pass="7171";
+$mysql_pass="----";
 $bd="bdestmeteorologica";
 ?>
