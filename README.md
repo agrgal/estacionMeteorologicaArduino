@@ -12,7 +12,7 @@ B) bdestacionmeteorologica.sql: copia ejempl ode la base de datos usada. Tabla: 
 
 C) indexCliente.html, carpeta css y carpeta imágenes: necesario para abrir un lector simple de los datos desde otra estación dentro de la misma red local (simplemente desde Mozilla-Firefox abrir fichero). Si está activada la opción de grabar, y la función AJAX correspondiente apunta a un script válido, se registrarán datos en la base de datos. 
 
-D) index.php, resultados.php y todas las carpetas: si las copio dentro de la ruta de un servidor web con MySQL (instalada la base de datos anterior) conectado a la misma red local, seré capaz de obtener datos y obtener resultados de los datos grabados en MySQL. 
+D) index.php, resultados.php y todas las carpetas: si las copio dentro de la ruta de un servidor web con MySQL (instalada la base de datos anterior) conectado a la misma red local, seré capaz de obtener datos y obtener resultados de los datos grabados en MySQL. IMPORTANTE: modificar el fichero configuracion/config.php con los parámetros de configuración de tu servidor.
 
 Lector de datos de Estación Meteorológica Arduino by Aurelio Gallardo Rodríguez is licensed under a Creative Commons Reconocimiento-NoComercial-CompartirIgual 4.0 Internacional License
 
