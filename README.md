@@ -10,6 +10,8 @@ A) Sensor_temperatura_conexi_n_ethernet_JSON.ino , programa en el IDE Arduino ca
 
 B) bdestacionmeteorologica.sql: copia ejempl ode la base de datos usada. Tabla: tb_datos. Preparada para recibir parámetros de tiempo, Temperatura, Presión y Humedad.
 
+  B1) Ficheros de las conexiones en ARDUINO, para fritzing y PNG.
+
 C) indexCliente.html, carpeta css y carpeta imágenes: necesario para abrir un lector simple de los datos desde otra estación dentro de la misma red local (simplemente desde Mozilla-Firefox abrir fichero). Si está activada la opción de grabar, y la función AJAX correspondiente apunta a un script válido, se registrarán datos en la base de datos. 
 
 D) index.php, resultados.php y todas las carpetas: si las copio dentro de la ruta de un servidor web con MySQL (instalada la base de datos anterior) conectado a la misma red local, seré capaz de obtener datos y obtener resultados de los datos grabados en MySQL. IMPORTANTE: modificar el fichero configuracion/config.php con los parámetros de configuración de tu servidor.
